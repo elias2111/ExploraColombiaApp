@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "117285369957",
+    "project_id": "exploracolombiaapp-8412a",
+    "storage_bucket": "exploracolombiaapp-8412a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117285369957:android:b9a340a4a345de230cae8c",
+        "android_client_info": {
+          "package_name": "co.edu.unab.EliasCruz.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5CNz-3bkmiadfBEiYRAgfqqnvzw4tKuc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

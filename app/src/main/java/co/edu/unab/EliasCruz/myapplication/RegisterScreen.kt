@@ -1,5 +1,6 @@
 package co.edu.unab.EliasCruz.myapplication
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -32,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.edu.unab.EliasCruz.myapplication.ui.theme.ExploraColombiaAppTheme
-
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun RegisterScreen(
@@ -46,6 +48,10 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var acceptedTerms by remember { mutableStateOf(false) }
+
+    // Variables de Firebase y Contexto para los mensajes de error
+    val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
 
     val primaryOrange = Color(0xFFE45D25)
     val lightGrayBg = Color(0xFFF8F9FE)
@@ -76,7 +82,7 @@ fun RegisterScreen(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = "Explorando Colombia",
                 color = primaryOrange,
@@ -178,8 +184,31 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            // BOTÓN DE REGISTRARSE ACTUALIZADO CON FIREBASE
             Button(
-                onClick = { onRegisterSuccess() },
+                onClick = {
+                    if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
+                        if (password == confirmPassword) {
+                            if (acceptedTerms) {
+                                auth.createUserWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Toast.makeText(context, "Registro Exitoso", Toast.LENGTH_SHORT).show()
+                                            onRegisterSuccess()
+                                        } else {
+                                            Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                            } else {
+                                Toast.makeText(context, "Debes aceptar los términos y condiciones", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(context, "Por favor llena todos los campos", Toast.LENGTH_SHORT).show()
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp),
